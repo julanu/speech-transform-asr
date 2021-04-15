@@ -1,0 +1,82 @@
+stage 0: Data Preparation
+Preparing data/local/train transcriptions
+Preparing data/local/dev transcriptions
+Preparing data/local/test transcriptions
+local/aishell_data_prep.sh: AISHELL data preparation succeeded
+stage 1: Feature Generation
+steps/make_fbank.sh --cmd run.pl --mem 2G --nj 4 --write_utt2num_frames true data/train exp/make_fbank/train fbank/train
+utils/validate_data_dir.sh: Successfully validated data-directory data/train
+steps/make_fbank.sh: [info]: no segments file exists: assuming wav.scp indexed by utterance.
+steps/make_fbank.sh: Succeeded creating filterbank features for train
+steps/make_fbank.sh --cmd run.pl --mem 2G --nj 4 --write_utt2num_frames true data/test exp/make_fbank/test fbank/test
+utils/validate_data_dir.sh: Successfully validated data-directory data/test
+steps/make_fbank.sh: [info]: no segments file exists: assuming wav.scp indexed by utterance.
+steps/make_fbank.sh: Succeeded creating filterbank features for test
+steps/make_fbank.sh --cmd run.pl --mem 2G --nj 4 --write_utt2num_frames true data/dev exp/make_fbank/dev fbank/dev
+utils/validate_data_dir.sh: Successfully validated data-directory data/dev
+steps/make_fbank.sh: [info]: no segments file exists: assuming wav.scp indexed by utterance.
+steps/make_fbank.sh: Succeeded creating filterbank features for dev
+compute-cmvn-stats scp:data/train/feats.scp data/train/cmvn.ark 
+LOG (compute-cmvn-stats[5.5.903~1-6260b]:main():compute-cmvn-stats.cc:168) Wrote global CMVN stats to data/train/cmvn.ark
+LOG (compute-cmvn-stats[5.5.903~1-6260b]:main():compute-cmvn-stats.cc:171) Done accumulating CMVN stats for 120098 utterances; 0 had errors.
+dictionary: data/lang_1char/train_chars.txt
+stage 2: Dictionary and Json Data Preparation
+make a non-linguistic symbol list
+make a dictionary
+4233 data/lang_1char/train_chars.txt
+make json files
+sym2int.pl: replacing 甯 with 0
+sym2int.pl: replacing 甯 with 0
+sym2int.pl: replacing 甯 with 0
+sym2int.pl: replacing 埕 with 0
+sym2int.pl: replacing 甯 with 0
+sym2int.pl: replacing 藕 with 0
+sym2int.pl: replacing 祎 with 0
+sym2int.pl: replacing 祎 with 0
+sym2int.pl: replacing 甯 with 0
+sym2int.pl: replacing 垭 with 0
+sym2int.pl: replacing 纾 with 0
+sym2int.pl: replacing 疙 with 0
+sym2int.pl: replacing ｂ with 0
+sym2int.pl: replacing 垡 with 0
+sym2int.pl: replacing 疡 with 0
+sym2int.pl: replacing 嗪 with 0
+sym2int.pl: replacing 雹 with 0
+sym2int.pl: replacing 淅 with 0
+sym2int.pl: replacing 谶 with 0
+sym2int.pl: replacing 诏 with 0
+sym2int.pl: not warning for OOVs any more times
+** Replaced 51 instances of OOVs with 0
+sym2int.pl: replacing 斡 with 0
+sym2int.pl: replacing 沂 with 0
+sym2int.pl: replacing 绢 with 0
+sym2int.pl: replacing 髌 with 0
+sym2int.pl: replacing 湄 with 0
+sym2int.pl: replacing 圃 with 0
+sym2int.pl: replacing 柚 with 0
+sym2int.pl: replacing 柚 with 0
+sym2int.pl: replacing 柚 with 0
+sym2int.pl: replacing 圃 with 0
+sym2int.pl: replacing 荇 with 0
+sym2int.pl: replacing 芪 with 0
+sym2int.pl: replacing 薙 with 0
+sym2int.pl: replacing 潦 with 0
+sym2int.pl: replacing 鲤 with 0
+sym2int.pl: replacing 涟 with 0
+sym2int.pl: replacing 筏 with 0
+sym2int.pl: replacing 筏 with 0
+sym2int.pl: replacing 筏 with 0
+sym2int.pl: replacing 锚 with 0
+sym2int.pl: not warning for OOVs any more times
+** Replaced 110 instances of OOVs with 0
+stage 3: Network Training
+stage 4: Decoding
+run.pl: job failed, log is in exp/train_m4_n3_in80_elayer6_head8_k64_v64_model512_inner2048_drop0.1_pe5000_emb512_dlayer6_share1_ls0.1_epoch16_shuffle1_bs8_bf7500_mli800_mlo150_k0.2_warm4000/decode_test_beam5_nbest1_ml100/decode.log
+2021-04-11 02:44:33,092 (json2trn:24) INFO: reading exp/train_m4_n3_in80_elayer6_head8_k64_v64_model512_inner2048_drop0.1_pe5000_emb512_dlayer6_share1_ls0.1_epoch16_shuffle1_bs8_bf7500_mli800_mlo150_k0.2_warm4000/decode_test_beam5_nbest1_ml100/data.json
+Traceback (most recent call last):
+  File "/home/mjula/git_projects/Speech-Transformer/egs/aishell/../../src/utils/json2trn.py", line 25, in <module>
+    with open(args.json, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'exp/train_m4_n3_in80_elayer6_head8_k64_v64_model512_inner2048_drop0.1_pe5000_emb512_dlayer6_share1_ls0.1_epoch16_shuffle1_bs8_bf7500_mli800_mlo150_k0.2_warm4000/decode_test_beam5_nbest1_ml100/data.json'
+write a CER (or TER) result in exp/train_m4_n3_in80_elayer6_head8_k64_v64_model512_inner2048_drop0.1_pe5000_emb512_dlayer6_share1_ls0.1_epoch16_shuffle1_bs8_bf7500_mli800_mlo150_k0.2_warm4000/decode_test_beam5_nbest1_ml100/result.txt
+|       SPKR          |           # Snt                      # Wrd           |        Corr                 Sub                  Del                 Ins                  Err               S.Err        |
+|       Sum/Avg       |               0                          0           |         0.0                 0.0                  0.0                 0.0                  0.0                 0.0        |
