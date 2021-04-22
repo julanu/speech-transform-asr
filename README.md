@@ -1,19 +1,20 @@
-# Speech Transformer
+# Speech Transformer: End-to-End ASR with Transformer
 
 ## Notes
 In order to run this project, you should either use a dual-boot machine, with any *nix system of your choice, or you could use WSL2 on Windows(Ubuntu20.04 on Windows).
-The algorithm makes use of the NVIDIA drivers for training and processing, thus you can not make those drivers available on a guest box(VM) without making it available only for the guest, meaning it won't be shared with the host machine.
+The algorithm makes use of the NVIDIA drivers for training and processing, thus you can not make those drivers available on a guest box(VM) without making it available only for the guest, meaning it won't be shared with the host machine. This is rarely possible so the best setup would be a Linux machine with dedicated GPUs for this architecture.
+<br />
+<br />
 
-
-
-One chance, though not feasible(at this moment April 2021) in my opinion would be:<br/>
+One chance to skip the dual boot part, though not feasible(at this moment April 2021), would be:<br/>
 [CUDA on WSL :: CUDA Toolkit Documentation (nvidia.com)](https://docs.nvidia.com/cuda/wsl-user-guide/index.html).
 
 [Getting started with CUDA on Ubuntu WSL2](https://ubuntu.com/blog/getting-started-with-cuda-on-ubuntu-on-wsl-2).
 
-I would also suggest checking out this StackOverflow [answer](https://askubuntu.com/questions/1252964/please-help-configuring-nvidia-smi-ubuntu-20-04-on-wsl-2).
+I would also suggest checking out this StackOverflow [answer](https://askubuntu.com/questions/1252964/please-help-configuring-nvidia-smi-ubuntu-20-04-on-wsl-2) if you have problems setting up your own machine.
 
-Ensure that you install Build version 20145 or higher. You can check your build version number by running `winver` via the Windows Run command.
+### If you want to use WSL2:
+-> Ensure that you install Build version 20145 or higher. You can check your build version number by running `winver` via the Windows Run command.
 
 
 ## Installation
@@ -24,7 +25,7 @@ Clone the repo of the projects from [here](https://github.com/kaituoxu/Speech-Tr
 git clone https://github.com/kaituoxu/Speech-Transformer
 ```
 
-The following additional dependencies should be installed:
+The following additional dependencies should be installed, note that PyTorch was installed with the CPU version for CPU training, otherwise you can install as normal the PyTorch package:<br />
 ```python
 certifi==2020.12.5
 chardet==4.0.0
@@ -34,22 +35,23 @@ idna==2.10
 jsonpatch==1.32
 jsonpointer==2.1
 kaldi-io==0.9.4
-numpy==1.20.1
+numpy
 Pillow==8.1.2
 pyzmq==22.0.3
 requests==2.25.1
-scipy==1.6.1
+scipy
 six==1.15.0
-torch==1.7.0
+torch==1.7.0+cpu
 torchaudio==0.7.0
 torchfile==0.1.0
-torchvision==0.8.1
+torchvision==0.8.1+cpu
 tornado==6.1
 typing-extensions==3.7.4.3
 urllib3==1.26.4
 visdom==0.1.8.9
 websocket-client==0.58.0
 ```
+You can achieve this with: ```pip3 install -r requirements.txt```<br />
 
 After cloning the repo, copy the [KALDI](https://github.com/kaldi-asr/kaldi) repo inside the `tools` folder of you Speech-Transformer copy:
 
@@ -59,8 +61,7 @@ git clone https://github.com/kaldi-asr/kaldi
 ```
 
 After changing your directory to `tools`, follow the installation instructions for KALDI as per the `INSTALL` files present there.
-You can always check if you have all the dependencies by running
-
+You can always check if you have all the dependencies by running:
 ```
 Speech-Transformer/tools/kaldi/tools$ bash extras/check_dependencies.sh
 ```
@@ -100,7 +101,8 @@ train.py
 [...]
 ```
 
-There is this script:
+There is this script, which configs how much memory/gpu some scripts should use, which you should take
+into account:
 
 ```
 $ cat egs/aishell/cmd.sh  
@@ -136,46 +138,35 @@ export decode_cmd="run.pl --mem 6G"
 ```
 
 
+For CPU training specifically, this is how you install the `PyTorch` package to the latest stable version(at this time):
 ```
 pip install torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-# Speech Transformer: End-to-End ASR with Transformer
+
 A PyTorch implementation of Speech Transformer [1], an end-to-end automatic speech recognition with [Transformer](https://arxiv.org/abs/1706.03762) network, which directly converts acoustic features to character sequence using a single nueral network.
 
-```
-Ad: Welcome to join Kwai Speech Team, make your career great! Send your resume to: xukaituo [at] kuaishou [dot] com!
-广告时间：欢迎加入快手语音组，make your career great! 快发送简历到xukaituo [at] kuaishou [dot] com吧！
-広告：Kwai チームへようこそ！自分のキャリアを照らそう！レジュメをこちらへ: xukaituo [at] kuaishou [dot] com!
-```
-
-## Install
-- Python3 (recommend Anaconda)
-- PyTorch 0.4.1+
-- [Kaldi](https://github.com/kaldi-asr/kaldi) (just for feature extraction)
-- `pip install -r requirements.txt`
-- `cd tools; make KALDI=/path/to/kaldi`
-- If you want to run `egs/aishell/run.sh`, download [aishell](http://www.openslr.org/33/) dataset for free.
 
 ## Usage
-### Quick start
+Before you can start training the algorithm, you should modify the path to the dataset first:
 ```bash
 $ cd egs/aishell
-# Modify aishell data path to your path in the begining of run.sh 
+# Modify aishell data path to your path in the begining of run.sh, the you can execute it
 $ bash run.sh
 ```
-That's all!
 
-You can change parameter by `$ bash run.sh --parameter_name parameter_value`, egs, `$ bash run.sh --stage 3`. See parameter name in `egs/aishell/run.sh` before `. utils/parse_options.sh`.
-### Workflow
-Workflow of `egs/aishell/run.sh`:
+Download the dataset intended for this algorithm: [aishell](http://www.openslr.org/33/) dataset for free. <br />
+You can also use one of the following datasets: [Mozilla Common Voice](https://commonvoice.mozilla.org/en/datasets)
+
+You can change parameters by `$ bash run.sh --parameter_name parameter_value`, egs, `$ bash run.sh --stage 3`. See parameter name in `egs/aishell/run.sh` before `. utils/parse_options.sh`.
+
+## Workflow of `egs/aishell/run.sh`:
 - Stage 0: Data Preparation
 - Stage 1: Feature Generation
 - Stage 2: Dictionary and Json Data Preparation
 - Stage 3: Network Training
 - Stage 4: Decoding
-### More detail
-`egs/aishell/run.sh` provide example usage.
+### More detail you can find here: `egs/aishell/run.sh` provide example usage.
 ```bash
 # Set PATH and PYTHONPATH
 $ cd egs/aishell/; . ./path.sh
@@ -190,6 +181,7 @@ If you want to visualize your loss, you can use [visdom](https://github.com/face
 2. Open a new terminal and run `$ bash run.sh --visdom 1 --visdom_id "<any-string>"` or `$ train.py ... --visdom 1 --vidsdom_id "<any-string>"`.
 3. Open your browser and type `<your-remote-server-ip>:8097`, egs, `127.0.0.1:8097`.
 4. In visdom website, chose `<any-string>` in `Environment` to see your loss.
+
 ![loss](egs/aishell/figures/train-k0.2-bf15000-shuffle-ls0.1.png)
 #### How to resume training?
 ```bash
