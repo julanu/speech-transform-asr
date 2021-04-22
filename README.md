@@ -158,22 +158,19 @@ $ bash run.sh
 Download the dataset intended for this algorithm: [aishell](http://www.openslr.org/33/) dataset for free. <br />
 You can also use one of the following datasets: [Mozilla Common Voice](https://commonvoice.mozilla.org/en/datasets)
 
-You can change parameters by `$ bash run.sh --parameter_name parameter_value`, egs, `$ bash run.sh --stage 3`. See parameter name in `egs/aishell/run.sh` before `. utils/parse_options.sh`.
+You can change parameters by `$ bash run.sh --parameter_name parameter_value`, egs, `$ bash run.sh --stage 3`.<br />
+See parameter name in `egs/aishell/run.sh` before `. utils/parse_options.sh`.
 
-## Workflow of `egs/aishell/run.sh`:
+### Workflow of `egs/aishell/run.sh`:
 - Stage 0: Data Preparation
 - Stage 1: Feature Generation
 - Stage 2: Dictionary and Json Data Preparation
 - Stage 3: Network Training
 - Stage 4: Decoding
-### More detail you can find here: `egs/aishell/run.sh` provide example usage.
+### More detail you can find here: `egs/aishell/run.sh`
 ```bash
 # Set PATH and PYTHONPATH
 $ cd egs/aishell/; . ./path.sh
-# Train
-$ train.py -h
-# Decode
-$ recognize.py -h
 ```
 #### How to visualize loss?
 If you want to visualize your loss, you can use [visdom](https://github.com/facebookresearch/visdom) to do that:
@@ -182,13 +179,17 @@ If you want to visualize your loss, you can use [visdom](https://github.com/face
 3. Open your browser and type `<your-remote-server-ip>:8097`, egs, `127.0.0.1:8097`.
 4. In visdom website, chose `<any-string>` in `Environment` to see your loss.
 
-![loss](egs/aishell/figures/train-k0.2-bf15000-shuffle-ls0.1.png)
+<!-- ![loss](egs/aishell/figures/train-k0.2-bf15000-shuffle-ls0.1.png) -->
 #### How to resume training?
+In order to use this feature, a `checkpoint` folder should be setup for the algorithm, this can be done through
 ```bash
 $ bash run.sh --continue_from <model-path>
 ```
 #### How to solve out of memory?
-When happened in training, try to reduce `batch_size`. `$ bash run.sh --batch_size <lower-value>`.
+This can happen while the algorithm is training, try to reduce the `batch_size` parameter in the `run.sh` script.<br />
+`$ bash run.sh --batch_size <lower-value>`.
+
+
 
 ## Results
 | Model | CER | Config |
@@ -199,4 +200,3 @@ When happened in training, try to reduce `batch_size`. `$ bash run.sh --batch_si
 
 ## Reference
 - [1] Yuanyuan Zhao, Jie Li, Xiaorui Wang, and Yan Li. "The SpeechTransformer for Large-scale Mandarin Chinese Speech Recognition." ICASSP 2019.
-# SpeechTranformer-ASR
