@@ -138,10 +138,12 @@ export decode_cmd="run.pl --mem 6G"
 ```
 
 
+
 For CPU training specifically, this is how you install the `PyTorch` package to the latest stable version(at this time):
 ```
 pip install torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
+
 
 
 A PyTorch implementation of Speech Transformer [1], an end-to-end automatic speech recognition with [Transformer](https://arxiv.org/abs/1706.03762) network, which directly converts acoustic features to character sequence using a single nueral network.

@@ -14,6 +14,7 @@ export train_cmd="run.pl --mem 2G"
 export cuda_cmd="run.pl --mem 2G --gpu 0"
 export decode_cmd="run.pl --mem 4G"
 
+
 # NPU setup
 # export train_cmd="queue.pl -q all.q --mem 2G"
 # export cuda_cmd="/home/work_nfs/common/tools/pyqueue_asr.pl --mem 2G --gpu 1"

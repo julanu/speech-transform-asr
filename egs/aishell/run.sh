@@ -8,6 +8,7 @@ stage=-1  # Modify to control start from witch stage
 ngpu=0         # number of gpus ("0" uses cpu, otherwise use gpu)
 nj=4
 
+
 dumpdir=dump   # directory to dump full features
 
 # Feature configuration
